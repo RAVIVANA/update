@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Account Application Form</title>
+  <style>
+    table {
+      width: 80%;
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <form id="first-form" >
+    <!-- First form fields here -->
+    <table>
+      <tr>
+        <td>Application ID:</td>
+        <td><input type="number" id="acap_id" name="acap_id"></td>
+      </tr>
+      <tr>
+        <td>Application Nominee First Name:</td>
+        <td><input type="text" id="acap_nominee_fn" name="acap_nominee_fn"></td>
+      </tr>
+      <tr>
+        <td>Application Nominee Last Name:</td>
+        <td><input type="text" id="acap_nominee_ln" name="acap_nominee_ln"></td>
+      </tr>
+      <tr>
+        <td>Customer ID:</td>
+        <td><input type="number" id="acap_cust_id" name="acap_cust_id"></td>
+      </tr>
+      <tr>
+        <td>Application Date:</td>
+        <td><input type="date" id="acap_apdate" name="acap_apdate"></td>
+      </tr>
+      <tr>
+        <td>Account Type ID:</td>
+        <td><input type="number" id="acap_acty_id" name="acap_acty_id"></td>
+      </tr>
+      <tr>
+        <td>Created By:</td>
+        <td><input type="text" id="acap_createdby" name="acap_createdby"></td>
+      </tr>
+      <tr>
+        <td>Created Date:</td>
+        <td><input type="date" id="acap_createddate" name="acap_createddate"></td>
+      </tr>
+      <tr>
+        <td>Aadhar card:</td>
+        <td><input type="file" id="aadhar" name="aadhar"></td>
+      </tr>
+      <tr>
+        <td>PAN card:</td>
+        <td><input type="file" id="pan" name="pan"></td>
+      </tr>
+      <tr>
+        <td>Passport :</td>
+        <td><input type="file" id="passport" name="passport"></td>
+      </tr>
+      <tr>
+        <td>Driving license :</td>
+        <td><input type="file" id="driving" name="driving"></td>
+      </tr>
+      <tr>
+        <td>Job card:</td>
+        <td><input type="file" id="jobcard" name="jobcard"></td>
+      </tr>
+    </table>
+    <button type="button" onclick="showSecondForm()">Next</button>
+  </form>
+
+  <form id="second-form" class="hidden" action="customer_data_trail_save" method="post" >
+    <!-- Second form fields here -->
+    <table>
+      <tr>
+        <td>Customer ID:</td>
+        <td><input type="number" id="cust_id" name="cust_id" readonly></td>
+      </tr>
+      <tr>
+        <td>Customer Title:</td>
+        <td><input type="text" id="cust_title" name="cust_title"></td>
+      </tr>
+      <tr>
+        <td>Customer Type:</td>
+        <td><input type="text" id="cust_type" name="cust_type"></td>
+      </tr>
+      <tr>
+        <td>Customer Current Address:</td>
+        <td><input type="text" id="cust_caddress" name="cust_caddress"></td>
+      </tr>
+      <tr>
+        <td>Customer Current PIN Code:</td>
+        <td><input type="text" id="cust_capincode" name="cust_capincode"></td>
+      </tr>
+      <tr>
+        <td>Customer Date of Birth:</td>
+        <td><input type="date" id="cust_dob" name="cust_dob"></td>
+      </tr>
+      <tr>
+        <td>Customer Mobile 1:</td>
+        <td><input type="text" id="cust_mobile1" name="cust_mobile1"></td>
+      </tr>
+      <tr>
+        <td>Customer Mobile 2:</td>
+        <td><input type="text" id="cust_mobile2" name="cust_mobile2"></td>
+      </tr>
+      <tr>
+        <td>Customer Residence Phone:</td>
+        <td><input type="text" id="cust_rphone" name="cust_rphone"></td>
+      </tr>
+      <tr>
+        <td>Customer Residence Address:</td>
+        <td><input type="text" id="cust_raddress" name="cust_raddress"></td>
+      </tr>
+      <tr>
+        <td>Customer Residence PIN Code:</td>
+        <td><input type="text" id="cust_rapincode" name="cust_rapincode"></td>
+      </tr>
+    </table>
+    <button type="button" onclick="submitBothForms()">Submit</button>
+    <button type="button" onclick="showFirstForm()">Previous</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function showSecondForm() {
+    	
+      document.getElementById("first-form").classList.add("hidden");
+      document.getElementById("second-form").classList.remove("hidden");
+      var acap_nominee_fn = document.getElementById('acap_nominee_fn').value;
+      var acap_nominee_ln = document.getElementById('acap_nominee_ln').value;
+      var acap_cust_id= document.getElementById('acap_cust_id').value;
+      var acap_apdate = document.getElementById('acap_apdate').value;
+      var acap_acty_id= document.getElementById('acap_acty_id').value;
+      var acap_createdby= document.getElementById('acap_createdby').value;
+      var aadhar= document.getElementById('aadhar').value;
+      var pan= document.getElementById('pan').value;
+      var passport= document.getElementById('passport').value;
+      var driving= document.getElementById('driving').value;
+      var jobcard= document.getElementById('jobcard').value;
+      var aadharFile = document.getElementById("aadhar").value;
+      var passportFile = document.getElementById('passport').value;
+      var drivingLicenseFile= document.getElementById('driving').value;
+      var jobCardFile = document.getElementById("jobcard").value;
+      var panFile=document.getElementById('pan').value;
+      $.ajax({
+    	url:"account_application_save",
+    	type:"post",
+    	data:{acap_nominee_fn:acap_nominee_fn , 
+            acap_cust_id:acap_cust_id,
+           acap_apdate:acap_apdate,
+          acap_acty_id: acap_acty_id,
+          acap_createdby: acap_createdby,
+          aadhar:aadhar,
+          pan: pan,
+         passport:passport,
+         driving:passport,
+         jobcard:jobcard,
+         aadharFile:aadharFile,
+         panFile:panFile,
+         passportFile:passportFile,
+         drivingLicenseFile:drivingLicenseFile,
+         jobCardFile:jobCardFile
+         
+    	},
+    	 success: function(response) {
+             console.log('First form submitted successfully');
+           },
+           error: function(jqXHR, textStatus, errorThrown) {
+             console.log('Error occurred while submitting first form:', errorThrown);
+           }
+    	  
+    	  
+      })
+      
+    }
+
+    function showFirstForm() {
+      document.getElementById("second-form").classList.add("hidden");
+      document.getElementById("first-form").classList.remove("hidden");
+    }
+
+    function submitBothForms() {
+    
+
+    	 var custId = document.getElementById("cust_id").value;
+    	  var custTitle = document.getElementById("cust_title").value;
+    	  var custType = document.getElementById("cust_type").value;
+    	  var custCAddress = document.getElementById("cust_caddress").value;
+    	  var custCAPincode = document.getElementById("cust_capincode").value;
+    	  var custDOB = document.getElementById("cust_dob").value;
+    	  var custMobile1 = document.getElementById("cust_mobile1").value;
+    	  var custMobile2 = document.getElementById("cust_mobile2").value;
+    	  var custRPhone = document.getElementById("cust_rphone").value;
+    	  var custRAddress = document.getElementById("cust_raddress").value;
+
+    	  var formData = {
+    	    custId: custId,
+    	    custTitle: custTitle,
+    	    custType: custType,
+    	    custCAddress: custCAddress,
+    	    custCAPincode: custCAPincode,
+    	    custDOB: custDOB,
+    	    custMobile1: custMobile1,
+    	    custMobile2: custMobile2,
+    	    custRPhone: custRPhone,
+    	    custRAddress: custRAddress
+    	  };
+
+    	  // Make AJAX call to save the form data
+    	  $.ajax({
+    	    url: "customer_data_trail_save",
+    	    type: "POST",
+    	    data: formData,
+    	    success: function(response) {
+    	      // Handle success response
+    	      console.log("Form data saved successfully");
+    	    },
+    	    error: function(xhr, status, error) {
+    	      // Handle error response
+    	      console.log("Error occurred while saving form data");
+    	    }
+    	  });
+    }
+
+    function submitSecondForm(secondFormData) {
+      $.ajax({
+        url: 'result', // Replace with the appropriate URL for processing the second form
+        method: 'get',
+        success: function(response) {
+          console.log('Second form submitted successfully');
+          // Handle the success response as needed
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('Error occurred while submitting second form:', errorThrown);
+        }
+      });
+    }
+
+   // function getFormData(formId) {
+     // var formElement = document.getElementById(formId);
+  //    var formData = new FormData(formElement);
+   //   var data = {};
+///
+   //   for (var [key, value] of formData.entries()) {
+   //     data[key] = value;
+    //  }
+
+   //   return data;
+//    }
+  </script>
+</body>
+</html>

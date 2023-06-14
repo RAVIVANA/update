@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Account Data</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    .form-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      overflow: auto;
+    }
+    
+    .form-container {
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .form-container label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .form-container input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    
+    .form-container button {
+      padding: 8px 16px;
+      border: none;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .form-container button:hover {
+      background-color: #45a049;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Saving Accounts</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>acnt_id</th>
+        <th>acnt_acty_id</th>
+        <th>acnt_acap_id</th>
+        <th>acnt_cust_id</th>
+        <th>acnt_cdate</th>
+        <th>acnt_processedy</th>
+        <th>account_nominee</th>
+        <th>contact_no</th>
+        <th>address</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="account, rowStat : ${list_of_account}" id="row-${rowStat.index + 1}">
+        <td data-column="acnt_id" th:text="${account.accountId}"></td>
+        <td data-column="acnt_acty_id" th:text="${account.accountActivityId}"></td>
+        <td data-column="acnt_acap_id" th:text="${account.accountApplicationId}"></td>
+        <td data-column="acnt_cust_id" th:text="${account.customerId}"></td>
+        <td data-column="acnt_cdate" th:text="${account.createdDate}"></td>
+        <td data-column="acnt_processedy" th:text="${account.processed}"></td>
+        <td data-column="account_nominee" th:text="${account.nominee}"></td>
+        <td data-column="contact_no" th:text="${account.contactNumber}"></td>
+        <td data-column="address" th:text="${account.address}"></td>
+        <td>
+          <a class="edit-link" href="#" data-row-id="${rowStat.index + 1}">Edit</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="form-popup" id="edit-popup">
+    <div class="form-container" id="edit-form-container">
+      <!-- Form content will be dynamically generated here -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var editLinks = document.getElementsByClassName('edit-link');
+
+      for (var i = 0; i < editLinks.length; i++) {
+        editLinks[i].addEventListener('click', function(event) {
+          event.preventDefault();
+          openFormPopup(this.dataset.rowId);
+        });
+      }
+    });
+
+    function openFormPopup(rowId) {
+      var popup = document.getElementById('edit-popup');
+      var formContainer = document.getElementById('edit-form-container');
+      var row = document.getElementById('row-' + rowId);
+
+      // Clear previous form content
+      formContainer.innerHTML = '';
+
+      // Create input fields for each column
+      var columns = row.getElementsByTagName('td');
+      for (var i = 0; i < columns.length - 1; i++) { // Excluding the last column with "Edit" link
+        var columnData = columns[i].innerHTML;
+        var columnName = columns[i].getAttribute('data-column');
+
+        var label = document.createElement('label');
+        label.textContent = columnName;
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = columnData;
+
+        // Set the readonly attribute for non-editable fields
+        if (columnName !== 'address' && columnName !== 'contact_no') {
+          input.setAttribute('readonly', 'readonly');
+        }
+
+        formContainer.appendChild(label);
+        formContainer.appendChild(input);
+      }
+
+      // Create save button
+      var saveButton = document.createElement('button');
+      saveButton.textContent = 'Save';
+      saveButton.id = 'save-button';
+      saveButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        saveFormData(rowId);
+      });
+      formContainer.appendChild(saveButton);
+
+      popup.style.display = 'block';
+    }
+
+    function saveFormData(rowId) {
+      var formInputs = document.getElementById('edit-form-container').getElementsByTagName('input');
+      var row = document.getElementById('row-' + rowId);
+
+      // Update the column data in the row
+      var columns = row.getElementsByTagName('td');
+      for (var i = 0; i < columns.length - 1; i++) { // Excluding the last column with "Edit" link
+        columns[i].innerHTML = formInputs[i].value;
+      }
+
+      closeFormPopup();
+    }
+
+    function closeFormPopup() {
+      var popup = document.getElementById('edit-popup');
+      popup.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
