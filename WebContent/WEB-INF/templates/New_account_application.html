@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>View Account Applications</title>
+  <style>
+    /* Styles omitted for brevity */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    button {
+      padding: 6px 10px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Application ID</th>
+        <th>Application Nominee First Name</th>
+        <th>Application Nominee Last Name</th>
+        <th>Customer ID</th>
+        <th>Application Date</th>
+        <th>Account Type ID</th>
+        <th>Processed By</th>
+        <th>Created Date</th>
+        <th>Aadhar Card</th>
+        <th>PAN Card</th>
+        <th>Passport</th>
+        <th>Driving License</th>
+        <th>Job Card</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="accountApplication : ${list_of_account_applications}">
+        <td th:text="${accountApplication.id}"></td>
+        <td th:text="${accountApplication.nomineeFirstName}"></td>
+        <td th:text="${accountApplication.nomineeLastName}"></td>
+        <td th:text="${accountApplication.customerId}"></td>
+        <td th:text="${accountApplication.applicationDate}"></td>
+        <td th:text="${accountApplication.accountTypeId}"></td>
+        <td th:text="${accountApplication.processedBy}"></td>
+        <td th:text="${accountApplication.createdDate}"></td>
+        <td><a href="#" th:text="${accountApplication.aadharCard}">View</a></td>
+        <td><a href="#" th:text="${accountApplication.panCard}">View</a></td>
+        <td><a href="#" th:text="${accountApplication.passport}">View</a></td>
+        <td><a href="#" th:text="${accountApplication.drivingLicense}">View</a></td>
+        <td><a href="#" th:text="${accountApplication.jobCard}">View</a></td>
+        <td>
+          <button type="button" onclick="approveAccountApplication('${accountApplication.id}', this)">Approve</button>
+          <button type="button" onclick="rejectAccountApplication('${accountApplication.id}')">Reject</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function approveAccountApplication(applicationId, button) {
+      var row = button.parentNode.parentNode;
+      var applicationNomineeFirstName = row.cells[1].textContent;
+      var applicationNomineeLastName = row.cells[2].textContent;
+      var customerId = row.cells[3].textContent;
+      var applicationDate = row.cells[4].textContent;
+      var accountTypeId = row.cells[5].textContent;
+      var processedBy = row.cells[6].textContent;
+      var createdDate = row.cells[7].textContent;
+      
+
+      // AJAX call to the first server
+      $.ajax({
+        url: 'save_to_account_database',
+        type: 'POST',
+        data: {
+          applicationId: applicationId,
+          applicationNomineeFirstName: applicationNomineeFirstName,
+          applicationNomineeLastName: applicationNomineeLastName,
+          customerId: customerId,
+          applicationDate: applicationDate,
+          accountTypeId: accountTypeId,
+          processedBy: processedBy,
+          createdDate: createdDate
+        },
+        success: function(response) {
+          // Handle the success response
+          console.log('First server request success:', response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Handle the error
+          console.error('First server request error:', textStatus, errorThrown);
+        }
+      });
+
+      // AJAX call to the second server
+      $.ajax({
+        url: 'save_to_account_documents_database',
+        type: 'POST',
+        data: {
+          applicationId: applicationId,
+          aadharCard: row.cells[8].textContent,
+          panCard: row.cells[9].textContent,
+          passport: row.cells[10].textContent,
+          drivingLicense: row.cells[11].textContent,
+          jobCard: row.cells[12].textContent
+        },
+        success: function(response) {
+          // Handle the success response
+          console.log('Second server request success:', response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Handle the error
+          console.error('Second server request error:', textStatus, errorThrown);
+        }
+      });
+      
+      $.ajax({
+        url: 'save_to_customer_database',
+        type: 'POST',
+        data: {
+          customerId: customerId
+        },
+        success: function(response) {
+          // Handle the success response
+          console.log('Third server request success:', response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Handle the error
+          console.error('Third server request error:', textStatus, errorThrown);
+        }
+      });
+    }
+
+    function rejectAccountApplication(applicationId) {
+      // Function logic for rejecting an application
+      console.log('Reject application with ID:', applicationId);
+    }
+  </script>
+</body>
+</html>

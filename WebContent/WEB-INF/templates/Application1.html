@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Loan Applications</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            overflow: auto;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-container input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+         .attachment-link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .form-container button {
+            padding: 8px 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    function displayFile(filePath) {
+        var fileName = filePath.replace(/^.*[\\/]/, ''); // Extract the file name from the path
+        var fileExtension = fileName.split('.').pop().toLowerCase(); // Extract the file extension
+
+        // Check the file extension and perform the appropriate action
+        if (fileExtension === 'pdf') {
+            // Display PDF using an iframe
+            var iframe = document.createElement('iframe');
+            iframe.src = filePath;
+            iframe.style.width = '100%';
+            iframe.style.height = '500px';
+            var popup = open('', '_blank');
+            popup.document.body.appendChild(iframe);
+        } else if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'png') {
+            // Display image in a new window
+            var popup = open('', '_blank');
+            popup.document.write('<img src="' + filePath + '" style="max-width: 100%; max-height: 100%;" />');
+        } else {
+            // Display a generic message for unsupported file types
+            alert('Unsupported file type: ' + fileExtension);
+        }
+    }
+</script>
+
+    <h2>Loan Applications</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer ID</th>
+                <th>Application Date</th>
+                <th>Loan Type ID</th>
+                <th>Amount</th>
+                <th>EMI Limit From</th>
+                <th>EMI Limit To</th>
+                <th>Tenure Requested</th>
+                <th>Nominee</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Processed By</th>
+                <th>Process Date</th>
+                <th>Processed Status</th>
+                <th>Last Updated Date</th>
+                <th>Last Updated User</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Document</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="loanApp : ${loanApplications}">
+                <td th:text="${loanApp.getId()}"></td>
+                <td th:text="${loanApp.getCustId()}"></td>
+                <td th:text="${loanApp.getApplicationDate()}"></td>
+                <td th:text="${loanApp.getLoanTypeId()}"></td>
+                <td th:text="${loanApp.getAmount()}"></td>
+                <td th:text="${loanApp.getEmiLimitFrom()}"></td>
+                <td th:text="${loanApp.getEmiLimitTo()}"></td>
+                <td th:text="${loanApp.getTenureRequested()}"></td>
+                <td th:text="${loanApp.getNominee()}"></td>
+                <td th:text="${loanApp.getCreatedBy()}"></td>
+                <td th:text="${loanApp.getCreatedDate()}"></td>
+                <td th:text="${loanApp.getProcessedBy()}"></td>
+                <td th:text="${loanApp.getProcessDate()}"></td>
+                <td th:text="${loanApp.getProcessedStatus()}"></td>
+                <td th:text="${loanApp.getLastUpdatedDate()}"></td>
+                <td th:text="${loanApp.getLastUpdatedUser()}"></td>
+                <td th:text="${loanApp.getStatus()}"></td>
+                <td th:text="${loanApp.getRemarks()}"></td>
+                <td>
+                    <a th:href="${loanApp.getAttachment()}" class="attachment-link"
+                       onclick="displayFile('${loanApp.getAttachment()}')">View Attachment</a>
+                </td>                <td>
+                    <button onclick="submit()">Submit</button>
+                    <button onclick="rejected()">Rejected</button>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+ </body>
+ </html>

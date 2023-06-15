@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  
+    h1 {
+      margin-bottom: 20px;
+    }
+  
+    table {
+      margin-bottom: 20px;
+    }
+  
+    table th,
+    table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  
+    #loanTypeModal,
+    #descriptionForm {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+  
+    #loanTypeModal h2,
+    #descriptionForm h2 {
+      margin-top: 0;
+    }
+  
+    #loanTypeModal input[type="text"],
+    #loanTypeModal textarea,
+    #descriptionForm textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      resize: vertical;
+    }
+  
+    #loanTypeModal button,
+    #descriptionForm button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  
+    #loanTypeModal button:hover,
+    #descriptionForm button:hover {
+      background-color: #45a049;
+    }
+  
+    #loanTypeModal button[type="button"],
+    #descriptionForm button[type="button"] {
+      background-color: #f44336;
+    }
+  
+    #loanTypeModal button[type="button"]:hover,
+    #descriptionForm button[type="button"]:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h1>Loans</h1>
+
+  <table>
+    <tr>
+      <td><button onclick="showLoanTypeForm()">Add new Loan Type</button></td>
+    </tr>
+    <tr>
+      <td>
+        Select a Loan Type:
+        <select id="loan-type" onchange="showRow()">
+          <option value="">Select...</option>
+          <option value="1">Personal Loan</option>
+          <option value="2">Vehicle Loan</option>
+          <option value="3">Gold Loan</option>
+          <option value="4">Mortgage Loan</option>
+        </select>
+        <div id="information"></div>
+      </td>
+    </tr>
+  </table>
+  
+  <br><br>
+ 
+  <table id="myTable" hidden>
+    <tr>
+      <th>id</th>
+      <th>type</th>
+      <th>desc</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Personal Loan</td>
+      <td>A personal loan is an amount of money you can borrow to use for a variety of purposes.</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Vehicle Loan</td>
+      <td>A Vehicle Loan is a loan that allows you to purchase two and four-wheelers for personal use.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Gold Loan</td>
+      <td>The gold loan, also referred to as a loan against gold, is a secured loan that a borrower takes from a lender in lieu of gold ornaments such as gold jewelry.</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Mortgage Loan</td>
+      <td>A mortgage is a type of loan used to purchase or maintain a home, land, or other types of real estate.</td>
+    </tr>
+  </table>
+  
+  <br><br>
+  
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Loan Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="resultTableBody">
+    </tbody>
+  </table>
+  
+  <script>
+    function showRow() {
+      var searchValue = document.getElementById("loan-type").value;
+      
+      var sourceTable = document.getElementById("myTable");
+      
+      var rowCount = sourceTable.rows.length;
+      
+      var resultTableBody = document.getElementById("resultTableBody");
+      resultTableBody.innerHTML = "";
+      
+      for (var i = 0; i < rowCount; i++) {
+        var cellValue = sourceTable.rows[i].cells[0].innerHTML;
+        if (cellValue === searchValue) {
+          var clonedRow = sourceTable.rows[i].cloneNode(true);
+          resultTableBody.appendChild(clonedRow);
+          break;
+        }
+      }
+    }
+  </script>
+  
+  <!-- Loan Type Modal -->
+  <div id="loanTypeModal" style="display: none;">
+    <div>
+      <h2>New Loan Type</h2>
+      <form>
+        <table>
+          <tr>
+            <td>Loan Type ID:</td>
+            <td><input type="text" id="loan_id" name="loan_id" required></td>
+          </tr>
+
+          <tr>
+            <td>Loan Type Title:</td>
+            <td><input type="text" id="loan_title" name="loan_title" required></td>
+          </tr>
+        </table>
+
+        <button type="button" onclick="adddescription()">Add Description</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+  
+  <div id="descriptionForm" style="display: none;">
+    <div>
+      <h2>Description</h2>
+      <form>
+        <table>
+          <tr>
+            <td>Loan Type Description:</td>
+            <td><textarea id="loan_desc" name="loan_desc" rows="4" cols="40"></textarea></td>
+          </tr>
+        </table>
+
+        <button type="button" onclick="saveLoanType()">Save</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function adddescription() {
+      var modal = document.getElementById("descriptionForm");
+      modal.style.display = "block";
+    }
+    
+    function showLoanTypeForm() {
+      var modal = document.getElementById("loanTypeModal");
+      modal.style.display = "block";
+    }
+
+    function closeModal() {
+      var modals = document.querySelectorAll("#loanTypeModal, #descriptionForm");
+      modals.forEach(function(modal) {
+        modal.style.display = "none";
+      });
+    }
+
+    function saveLoanType() {
+      var loanId = document.getElementById("loan_id").value;
+      var loanTitle = document.getElementById("loan_title").value;
+      var loanDesc = document.getElementById("loan_desc").value;
+
+      console.log('Loan Type ID:', loanId);
+      console.log('Loan Type Title:', loanTitle);
+      console.log('Loan Type Description:', loanDesc);
+      
+      var table = document.getElementById("myTable");
+      var newRow = table.insertRow();
+
+      var cell1 = newRow.insertCell();
+      var cell2 = newRow.insertCell();
+      var cell3 = newRow.insertCell();
+
+      cell1.innerHTML = loanId;
+      cell2.innerHTML = loanTitle;
+      cell3.innerHTML = loanDesc;
+
+      addLoanTypeOption(loanTitle); // Add the new option
+
+      closeModal();
+    }
+
+    function addLoanTypeOption(title) {
+      var loanTypeSelect = document.getElementById("loan-type");
+      var option = document.createElement("option");
+      option.value = title.toLowerCase().replace(/\s+/g, "-");
+      option.text = title;
+      loanTypeSelect.add(option);
+    }
+  </script>
+</body>
+</html>
