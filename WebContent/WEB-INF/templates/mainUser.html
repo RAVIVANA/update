@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank Users</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div id="dropdownContainer">
+         <h2>Bank Users</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Designation</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${bankUsers}">
+                    <td th:text="${user.getBusr_title()}"></td>
+                    <td th:text="${user.getBusr_desg()}"></td>
+                    <td th:text="${user.getBusr_email()}"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Load the dropdown fragment using AJAX
+        $(document).ready(function() {
+            $.ajax({
+                url: "get_list",
+                type: "GET",
+                success: function(response) {
+                    $("#dropdownContainer").html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error occurred while retrieving dropdown fragment");
+                }
+            });
+        });
+
+        // Filter by designation on dropdown change
+        $(document).on("change", "#designationFilter", function() {
+            var selectedDesignation = $(this).val();
+
+            // Send AJAX request to retrieve bank users based on designation
+            $.ajax({
+                url: "get_bank_user",
+                type: "POST",
+                data: { busr_desg: selectedDesignation },
+                success: function(response) {
+                    $("#dropdownContainer").html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error occurred while retrieving bank users");
+                }
+            });
+        });
+    </script>
+    
+       
+   
+</body>
+</html>

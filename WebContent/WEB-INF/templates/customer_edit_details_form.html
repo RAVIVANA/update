@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Customer Data</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body id="r1">
+  <h2>Customer Data</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>cust_id</th>
+        <th>cust_title</th>
+        <th>cust_type</th>
+        <th>cust_caddress</th>
+        <th>cust_capincode</th>
+        <th>cust_dob</th>
+        <th>cust_mobile1</th>
+        <th>cust_mobile2</th>
+        <th>cust_rphone</th>
+        <th>cust_raddress</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="customer, rowStat : ${customerList}" id="row-${rowStat.index + 1}">
+        <td data-column="cust_id" th:text="${customer.getCust_id()}"></td>
+        <td data-column="cust_title" th:text="${customer.getCust_title()}"></td>
+        <td data-column="cust_type" th:text="${customer.getCust_type()}"></td>
+        <td data-column="cust_caddress" th:text="${customer.getCust_caddress()}"></td>
+        <td data-column="cust_capincode" th:text="${customer.getCust_capincode()}"></td>
+        <td data-column="cust_dob" th:text="${customer.getCust_dob()}"></td>
+        <td data-column="cust_mobile1" th:text="${customer.getCust_mobile1()}"></td>
+        <td data-column="cust_mobile2" th:text="${customer.getCust_mobile2()}"></td>
+        <td data-column="cust_rphone" th:text="${customer.getCust_rphone()}"></td>
+        <td data-column="cust_raddress" th:text="${customer.getCust_raddress()}"></td>
+        <td>
+          <button data-toggle="modal" data-target="#editModal" onclick="editRow(this)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Customer</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <div class="form-group">
+              <label for="cust_id">cust_id:</label>
+              <input type="text" class="form-control" id="cust_id" name="cust_id" readonly>
+            </div>
+            <div class="form-group">
+              <label for="cust_title">cust_title:</label>
+              <input type="text" class="form-control" id="cust_title" name="cust_title">
+            </div>
+            <div class="form-group">
+              <label for="cust_type">cust_type:</label>
+              <input type="text" class="form-control" id="cust_type" name="cust_type">
+            </div>
+            <div class="form-group">
+              <label for="cust_caddress">cust_caddress:</label>
+              <input type="text" class="form-control" id="cust_caddress" name="cust_caddress">
+            </div>
+            <div class="form-group">
+              <label for="cust_capincode">cust_capincode:</label>
+              <input type="text" class="form-control" id="cust_capincode" name="cust_capincode">
+            </div>
+            <div class="form-group">
+              <label for="cust_dob">cust_dob:</label>
+              <input type="text" class="form-control" id="cust_dob" name="cust_dob">
+            </div>
+            <div class="form-group">
+              <label for="cust_mobile1">cust_mobile1:</label>
+              <input type="text" class="form-control" id="cust_mobile1" name="cust_mobile1">
+            </div>
+            <div class="form-group">
+              <label for="cust_mobile2">cust_mobile2:</label>
+              <input type="text" class="form-control" id="cust_mobile2" name="cust_mobile2">
+            </div>
+            <div class="form-group">
+              <label for="cust_rphone">cust_rphone:</label>
+              <input type="text" class="form-control" id="cust_rphone" name="cust_rphone">
+            </div>
+            <div class="form-group">
+              <label for="cust_raddress">cust_raddress:</label>
+              <input type="text" class="form-control" id="cust_raddress" name="cust_raddress">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="saveButton" onclick="saveFormData()">Save</button>
+          <div id="successMessage" style="display: none;">
+ 				 <p>Form data saved successfully!</p>
+			</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function editRow(button) {
+      // Get the row containing the clicked button
+      var row = button.closest('tr');
+
+      // Get the values from the row cells
+      var cust_id = row.querySelector('[data-column="cust_id"]').textContent;
+      var cust_title = row.querySelector('[data-column="cust_title"]').textContent;
+      var cust_type = row.querySelector('[data-column="cust_type"]').textContent;
+      var cust_caddress = row.querySelector('[data-column="cust_caddress"]').textContent;
+      var cust_capincode = row.querySelector('[data-column="cust_capincode"]').textContent;
+      var cust_dob = row.querySelector('[data-column="cust_dob"]').textContent;
+      var cust_mobile1 = row.querySelector('[data-column="cust_mobile1"]').textContent;
+      var cust_mobile2 = row.querySelector('[data-column="cust_mobile2"]').textContent;
+      var cust_rphone = row.querySelector('[data-column="cust_rphone"]').textContent;
+      var cust_raddress = row.querySelector('[data-column="cust_raddress"]').textContent;
+
+      // Set the values in the edit form
+      document.getElementById('cust_id').value = cust_id;
+      document.getElementById('cust_title').value = cust_title;
+      document.getElementById('cust_type').value = cust_type;
+      document.getElementById('cust_caddress').value = cust_caddress;
+      document.getElementById('cust_capincode').value = cust_capincode;
+      document.getElementById('cust_dob').value = cust_dob;
+      document.getElementById('cust_mobile1').value = cust_mobile1;
+      document.getElementById('cust_mobile2').value = cust_mobile2;
+      document.getElementById('cust_rphone').value = cust_rphone;
+      document.getElementById('cust_raddress').value = cust_raddress;
+    }
+
+    function saveFormData() {
+    	  var form = document.getElementById('editForm');
+    	  var formData = {
+    	    Cust_id: form.cust_id.value,
+    	    Cust_title: form.cust_title.value,
+    	    Cust_type: form.cust_type.value,
+    	    Cust_caddress: form.cust_caddress.value,
+    	    Cust_capincode: form.cust_capincode.value,
+    	    Cust_dob: form.cust_dob.value,
+    	    Cust_mobile1: form.cust_mobile1.value,
+    	    Cust_mobile2: form.cust_mobile2.value,
+    	    Cust_rphone: form.cust_rphone.value,
+    	    Cust_raddress: form.cust_raddress.value,
+    	  };
+
+    	  // Send the form data to the server using AJAX
+    	  $.ajax({
+    	    url: "customer_data_updation",
+    	    type: "POST",
+    	    data: formData,
+    	    success: function(response) {
+    	      // Handle success response
+    	      console.log("Form data saved successfully");
+    	      function_4_customers();
+    	      
+    	     
+    	    },
+    	    error: function(xhr, status, error) {
+    	      // Handle error response
+    	      console.log("Error occurred while saving form data");
+    	    }
+    	  });
+    	}
+      function function_4_customers(){
+    	 document.getElementById('r1').innerHTML="";
+    	  $.ajax({
+    	    url:'customers',
+    	    method:'post',
+    	    success: function (resultText) {
+    	    	 $('#r1').html(resultText);
+    	    },
+    	    error: function (jqXHR, exception) {
+    	      console.log('Error occurred!');
+    	    }
+    	  })
+    }
+    
+
+  </script>
+</body>
+
+</html>

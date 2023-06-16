@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank Users</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div id="dropdownContainer">
+         <h2>Bank Users</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Designation</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${bankUser}">
+                    <td th:text="${user.getBusr_title()}"></td>
+                    <td th:text="${user.getBusr_desg()}"></td>
+                    <td th:text="${user.getBusr_email()}"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>    
+</body>
+</html>

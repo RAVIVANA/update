@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Account Data</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    .form-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      overflow: auto;
+    }
+    
+    .form-container {
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .form-container label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .form-container input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    
+    .form-container button {
+      padding: 8px 16px;
+      border: none;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .form-container button:hover {
+      background-color: #45a049;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Saving Accounts</h2>
+  <table>
+    <thead>
+      <tr>
+        
+        <th>acnt_acap_id</th>
+        <th>acnt_acty_id</th>
+        <th>account_first_nominee</th>
+        <th>account_last_nominee</th>
+        <th>acnt_cust_id</th>
+        <th>acnt_cdate</th>
+        <th>account_createdBy</th>
+        <th>acnt_processedy</th>
+         <th>cust_Title</th>
+          <th>cust_phoneNo</th>
+           <th>cust_Current_address</th>
+        
+        
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+			  <tr th:each="account, rowStat : ${list_of_account}" id="row-${rowStat.index + 1}">
+			  <td data-column="acnt_acap_id" th:text="${account.getApplicationId()}"></td>
+			  <td data-column="acnt_type_id" th:text="${account.getAccountTypeId()}"></td>
+			  <td data-column="account_nominee_firstName" th:text="${account.getApplicationNomineeFirstName()}"></td>
+			  <td data-column="account_nominee_lastName" th:text="${account.getApplicationNomineeLastName()}"></td>
+			  <td data-column="acnt_cust_id" th:text="${account.getCustomerId()}"></td>
+			  <td data-column="acnt_cdate" th:text="${account.getCreated_date()}"></td>
+			  <td data-column="account_CreatedBy" th:text="${account.getCreatedBy()}"></td>
+			  <td data-column="acnt_processedby" th:text="${account.getProcessedBy()}"></td>
+			  <td data-column="customer_title" th:text="${list_of_customer[rowStat.index]. getCust_title()}"></td>
+			  <td data-column="customer_phno" th:text="${list_of_customer[rowStat.index].getCust_mobile1()}"></td>
+			  <td data-column="customer_address" th:text="${list_of_customer[rowStat.index].getCust_caddress()}"></td> 
+			  <td>
+			    <button onclick="editRow(this)">Edit</button>
+			  </td>
+ </tr>
+  
+    </tbody>
+  </table>
+
+ 
+</body>
+</html>
